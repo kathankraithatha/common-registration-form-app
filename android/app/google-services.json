@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019875876909",
+    "project_id": "common-form-registration-app",
+    "storage_bucket": "common-form-registration-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019875876909:android:b1b4701752c4e1bb3658a4",
+        "android_client_info": {
+          "package_name": "com.example.form_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqigwqDKUzlf0pAAyEgI6a5pP1GDwwe0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
