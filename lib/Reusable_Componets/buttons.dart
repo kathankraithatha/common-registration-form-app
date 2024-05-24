@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 class VerificationButton extends StatelessWidget {
-   VerificationButton(this.buttonText,{super.key});
-   String buttonText;
+   const VerificationButton(this.onTap, this.buttonText,{super.key});
+   final String buttonText;
+   final void Function() onTap;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
       child: OutlinedButton(
-        onPressed: () {
-
-        },
+        onPressed:onTap,
         style: ButtonStyle(
           backgroundColor: WidgetStatePropertyAll<Color>(Colors.pinkAccent.shade200),
         ),
