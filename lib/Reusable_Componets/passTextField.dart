@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
-  const CustomTextField(this.textIcon, this.textHintText, this.textFieldController, {super.key});
+class CustomTextPassField extends StatelessWidget {
+  const CustomTextPassField(this.textIcon, this.textHintText, this.textFieldController, {super.key});
   final TextEditingController textFieldController;
   final String textHintText;
   final Icon textIcon;
@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
       height: 70,
       width: 300,
       child: TextField(
+        obscureText: true,
         controller: textFieldController,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
