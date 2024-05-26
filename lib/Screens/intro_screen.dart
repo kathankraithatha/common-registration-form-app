@@ -16,6 +16,7 @@ class IntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(Icons.home, color: Colors.white,),
         title: Text("Common Registration Form", style: GoogleFonts.roboto(
           color: Colors.white
         ),),
@@ -31,11 +32,40 @@ class IntroScreen extends StatelessWidget {
             SizedBox(width: 200,
                 child: Container(child: Lottie.asset('lib/animation/form2.json'))),
             VerificationButton((){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => SignUpScreen(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child){
+                    const begin = Offset(2.0, 0.0);
+                    const end = Offset.zero;
+                    const curve = Curves.decelerate;
+                    var tween = Tween(begin: begin, end: end).chain(
+                        CurveTween(curve: curve));
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  }
+                )
+              );
             }, "SignUp"),
 
             VerificationButton((){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+              Navigator.push(context,
+              PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation)=> SignInScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(2.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.decelerate;
+                  var tween=Tween(begin: begin, end: end).chain(
+                    CurveTween(curve: curve)
+                  );
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                }
+              )
+              );
             },"SignIn"),
           ],
         ),
