@@ -17,7 +17,6 @@ class UserScreen extends StatelessWidget {
     TextEditingController(), // mobile number controller
     TextEditingController(), // mobile number controller
     TextEditingController(), // mobile number controller
-    // Add more controllers as needed
   ];
 
   @override
