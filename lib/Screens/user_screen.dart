@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:form_application/Reusable_Componets/buttons.dart';
 import 'package:form_application/Reusable_Componets/form_textfield.dart';
 import 'package:form_application/Reusable_Componets/textfield.dart';
+import 'package:form_application/database/adding_data.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:random_string/random_string.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen({super.key});
@@ -66,8 +69,25 @@ class UserScreen extends StatelessWidget {
                 ),
               ),
               Center(
-                child: VerificationButton((){
+                child: VerificationButton(() async {
 
+                  String Id= randomAlpha(10);//Use Random Library
+                  Map<String, dynamic> userDetails={
+                    "Name": controllers[0].text,
+                    "Email": controllers[1].text,
+                    "PhoneNo": controllers[2].text,
+                    "Designation": controllers[3].text,
+                    "Age": controllers[4].text,
+                  };
+                  await UserDatabaseMethods().addUserBasicDetails(userDetails, Id).then((value)=>
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Data Entered Successfully"),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.blue,
+                          showCloseIcon: true,
+                        ),),
+                      );
                 }, "Submit Basic Details"),
               )
             ],
