@@ -1,32 +1,33 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:form_application/Reusable_Componets/buttons.dart';
 import 'package:form_application/Reusable_Componets/form_textfield.dart';
-import 'package:form_application/Reusable_Componets/textfield.dart';
 import 'package:form_application/database/adding_data.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_string/random_string.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class UserScreen extends StatelessWidget {
-  UserScreen({super.key});
+import 'dashboard_screen.dart';
+
+class BasicDetailsScreen extends StatelessWidget {
+  BasicDetailsScreen({super.key});
+
   final List<TextEditingController> controllers = [
     TextEditingController(), // Name controller
     TextEditingController(), // Email controller
     TextEditingController(), // mobile number controller
-    TextEditingController(), // mobile number controller
-    TextEditingController(), // mobile number controller
-    // Add more controllers as needed
+    TextEditingController(), // Designation controller
+    TextEditingController(), // age controller
   ];
+  final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("User Screen", style: GoogleFonts.roboto(
-            color: Colors.white
-        ),),
+        title: Text(
+          "User Screen",
+          style: GoogleFonts.roboto(color: Colors.white),
+        ),
         backgroundColor: Colors.pinkAccent.shade100,
       ),
       body: SafeArea(
@@ -50,18 +51,22 @@ class UserScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Form(
                   child: ListView.builder(
-                    shrinkWrap: true, // Wrap the content to avoid unnecessary space
-                    physics: NeverScrollableScrollPhysics(), // Disable scrolling if only a few fields
-                    itemCount: controllers.length, // Use the length of controllers list
+                    shrinkWrap: true,
+                    // Wrap the content to avoid unnecessary space
+                    physics: NeverScrollableScrollPhysics(),
+                    // Disable scrolling if only a few fields
+                    itemCount: controllers.length,
+                    // Use the length of controllers list
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: FormTextfield(
                           getInputType(index),
-                          getIcon(index), // Get the appropriate icon based on index
-                          getLabelText(index), // Get the appropriate label text based on index
+                          getIcon(index),
+                          // Get the appropriate icon based on index
+                          getLabelText(index),
+                          // Get the appropriate label text based on index
                           controllers[index],
-          
                         ),
                       );
                     },
@@ -70,25 +75,85 @@ class UserScreen extends StatelessWidget {
               ),
               Center(
                 child: VerificationButton(() async {
-
-                  String Id= randomAlpha(10);//Use Random Library
-                  Map<String, dynamic> userDetails={
-                    "Name": controllers[0].text,
-                    "Email": controllers[1].text,
-                    "PhoneNo": controllers[2].text,
-                    "Designation": controllers[3].text,
-                    "Age": controllers[4].text,
-                  };
-                  await UserDatabaseMethods().addUserBasicDetails(userDetails, Id).then((value)=>
+                  String email = controllers[1].text;
+                  bool emailExists =
+                      await userDatabaseMethods.checkEmailExists(email);
+                  bool isAnyFieldEmpty = false;
+                  for (var controller in controllers) {
+                    if (controller.text.isEmpty) {
+                      isAnyFieldEmpty = true;
+                      break;
+                    }
+                  }
+                  if (isAnyFieldEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Enter Data"),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.red,
+                        showCloseIcon: true,
+                      ),
+                    );
+                  } else if (emailExists) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            "Email already in use. Please use a different email."),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.red,
+                        showCloseIcon: true,
+                      ),
+                    );
+                  } else {
+                    String Id = randomAlpha(10); // Use Random Library
+                    Map<String, dynamic> userDetails = {
+                      "Name": controllers[0].text,
+                      "Email": controllers[1].text,
+                      "PhoneNo": controllers[2].text,
+                      "Designation": controllers[3].text,
+                      "Age": controllers[4].text,
+                    };
+                    await userDatabaseMethods
+                        .addUserBasicDetails(userDetails, Id)
+                        .then((value) async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      await prefs.setString('loggedInUserEmail', email);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text("Data Entered Successfully"),
                           behavior: SnackBarBehavior.floating,
                           backgroundColor: Colors.blue,
                           showCloseIcon: true,
-                        ),),
+                        ),
                       );
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DashboardScreen()));
+                    });
+                  }
+                  controllers.forEach((controller) => controller.clear());
                 }, "Submit Basic Details"),
+              ),
+              Center(
+                child: Text(
+                  "OR",
+                  style: GoogleFonts.josefinSans(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.blue.shade700,
+                  ),
+                ),
+              ),
+              Center(
+                child: VerificationButton(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DashboardScreen()));
+                }, "Already Filled?"),
               )
             ],
           ),
@@ -104,11 +169,11 @@ class UserScreen extends StatelessWidget {
         return Icon(Icons.person);
       case 1:
         return Icon(Icons.email);
-        case 2:
+      case 2:
         return Icon(Icons.phone);
-        case 3:
+      case 3:
         return Icon(Icons.work);
-        case 4:
+      case 4:
         return Icon(Icons.person_add_alt_rounded);
       default:
         return Icon(Icons.info); // Default icon
@@ -121,16 +186,17 @@ class UserScreen extends StatelessWidget {
         return "Enter your full name";
       case 1:
         return "Enter your email address";
-        case 2:
+      case 2:
         return "Enter your phone number";
-        case 3:
+      case 3:
         return "Enter your designation";
-        case 4:
+      case 4:
         return "Enter your age";
       default:
         return "Enter additional details"; // Default label
     }
   }
+
   TextInputType getInputType(int index) {
     switch (index) {
       case 0:
@@ -147,5 +213,4 @@ class UserScreen extends StatelessWidget {
         return TextInputType.text;
     }
   }
-
 }
