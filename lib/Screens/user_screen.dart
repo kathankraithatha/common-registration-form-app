@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_application/Reusable_Componets/buttons.dart';
 import 'package:form_application/Reusable_Componets/form_textfield.dart';
@@ -19,6 +20,7 @@ class BasicDetailsScreen extends StatelessWidget {
     TextEditingController(), // age controller
   ];
   final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();
+  final FirebaseAuth firebaseAuth=FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class BasicDetailsScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 15.0, left: 20.0),
                 child: Text(
                   "Enter Basic Details:",
-                  style: GoogleFonts.rem(
+                  style: GoogleFonts.roboto(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.blue.shade700,
@@ -52,20 +54,15 @@ class BasicDetailsScreen extends StatelessWidget {
                 child: Form(
                   child: ListView.builder(
                     shrinkWrap: true,
-                    // Wrap the content to avoid unnecessary space
                     physics: NeverScrollableScrollPhysics(),
-                    // Disable scrolling if only a few fields
                     itemCount: controllers.length,
-                    // Use the length of controllers list
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: FormTextfield(
                           getInputType(index),
                           getIcon(index),
-                          // Get the appropriate icon based on index
                           getLabelText(index),
-                          // Get the appropriate label text based on index
                           controllers[index],
                         ),
                       );
@@ -76,15 +73,9 @@ class BasicDetailsScreen extends StatelessWidget {
               Center(
                 child: VerificationButton(() async {
                   String email = controllers[1].text;
-                  bool emailExists =
-                      await userDatabaseMethods.checkEmailExists(email);
-                  bool isAnyFieldEmpty = false;
-                  for (var controller in controllers) {
-                    if (controller.text.isEmpty) {
-                      isAnyFieldEmpty = true;
-                      break;
-                    }
-                  }
+                  bool emailExists = await userDatabaseMethods.checkEmailExists(email);
+                  bool isAnyFieldEmpty = controllers.any((controller) => controller.text.isEmpty);
+
                   if (isAnyFieldEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -97,15 +88,14 @@ class BasicDetailsScreen extends StatelessWidget {
                   } else if (emailExists) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(
-                            "Email already in use. Please use a different email."),
+                        content: Text("Email already in use. Please use a different email."),
                         behavior: SnackBarBehavior.floating,
                         backgroundColor: Colors.red,
                         showCloseIcon: true,
                       ),
                     );
                   } else {
-                    String Id = randomAlpha(10); // Use Random Library
+                    String id = randomAlpha(10);
                     Map<String, dynamic> userDetails = {
                       "Name": controllers[0].text,
                       "Email": controllers[1].text,
@@ -113,11 +103,9 @@ class BasicDetailsScreen extends StatelessWidget {
                       "Designation": controllers[3].text,
                       "Age": controllers[4].text,
                     };
-                    await userDatabaseMethods
-                        .addUserBasicDetails(userDetails, Id)
-                        .then((value) async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
+
+                    await userDatabaseMethods.addUserBasicDetails(userDetails, id).then((value) async {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
                       await prefs.setString('loggedInUserEmail', email);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -130,9 +118,10 @@ class BasicDetailsScreen extends StatelessWidget {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const DashboardScreen()));
+                              builder: (context) => DashboardScreen(email: email)));
                     });
                   }
+
                   controllers.forEach((controller) => controller.clear());
                 }, "Submit Basic Details"),
               ),
@@ -148,13 +137,26 @@ class BasicDetailsScreen extends StatelessWidget {
                 ),
               ),
               Center(
-                child: VerificationButton(() {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DashboardScreen()));
+                child: VerificationButton(() async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  String? email = prefs.getString('loggedInUserEmail');
+                  if (email != null && email.isNotEmpty) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DashboardScreen(email: email)));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("No email found. Please enter your details first."),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.red,
+                        showCloseIcon: true,
+                      ),
+                    );
+                  }
                 }, "Already Filled?"),
-              )
+              ),
             ],
           ),
         ),
@@ -176,7 +178,7 @@ class BasicDetailsScreen extends StatelessWidget {
       case 4:
         return Icon(Icons.person_add_alt_rounded);
       default:
-        return Icon(Icons.info); // Default icon
+        return Icon(Icons.info);
     }
   }
 
@@ -193,22 +195,22 @@ class BasicDetailsScreen extends StatelessWidget {
       case 4:
         return "Enter your age";
       default:
-        return "Enter additional details"; // Default label
+        return "Enter additional details";
     }
   }
 
   TextInputType getInputType(int index) {
     switch (index) {
       case 0:
-        return TextInputType.text; // Name
+        return TextInputType.text;
       case 1:
-        return TextInputType.emailAddress; // Email
+        return TextInputType.emailAddress;
       case 2:
-        return TextInputType.phone; // Phone number
+        return TextInputType.phone;
       case 3:
-        return TextInputType.text; // Designation
+        return TextInputType.text;
       case 4:
-        return TextInputType.number; // Age
+        return TextInputType.number;
       default:
         return TextInputType.text;
     }
