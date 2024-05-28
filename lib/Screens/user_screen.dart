@@ -15,13 +15,8 @@ class BasicDetailsScreen extends StatelessWidget {
     TextEditingController(), // Name controller
     TextEditingController(), // Email controller
     TextEditingController(), // mobile number controller
-<<<<<<< HEAD
     TextEditingController(), // Designation controller
     TextEditingController(), // age controller
-=======
-    TextEditingController(), // mobile number controller
-    TextEditingController(), // mobile number controller
->>>>>>> f88da5ccc2e4e501b161a6e0a28bf9ea481f0bc8
   ];
   final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();
 
