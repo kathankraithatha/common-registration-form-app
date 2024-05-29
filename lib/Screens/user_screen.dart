@@ -73,7 +73,7 @@ class BasicDetailsScreen extends StatelessWidget {
               Center(
                 child: VerificationButton(() async {
                   String email = controllers[1].text;
-                  bool emailExists = await userDatabaseMethods.checkEmailExists(email);
+                  bool emailExists = await userDatabaseMethods.checkEmailExists();
                   bool isAnyFieldEmpty = controllers.any((controller) => controller.text.isEmpty);
 
                   if (isAnyFieldEmpty) {
