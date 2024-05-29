@@ -54,7 +54,7 @@ class BasicDetailsScreen extends StatelessWidget {
                 child: Form(
                   child: ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: controllers.length,
                     itemBuilder: (context, index) {
                       return Padding(
@@ -121,41 +121,8 @@ class BasicDetailsScreen extends StatelessWidget {
                               builder: (context) => DashboardScreen(email: email)));
                     });
                   }
-
                   controllers.forEach((controller) => controller.clear());
                 }, "Submit Basic Details"),
-              ),
-              Center(
-                child: Text(
-                  "OR",
-                  style: GoogleFonts.josefinSans(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.blue.shade700,
-                  ),
-                ),
-              ),
-              Center(
-                child: VerificationButton(() async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  String? email = prefs.getString('loggedInUserEmail');
-                  if (email != null && email.isNotEmpty) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DashboardScreen(email: email)));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("No email found. Please enter your details first."),
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: Colors.red,
-                        showCloseIcon: true,
-                      ),
-                    );
-                  }
-                }, "Already Filled?"),
               ),
             ],
           ),
@@ -168,17 +135,17 @@ class BasicDetailsScreen extends StatelessWidget {
   Icon getIcon(int index) {
     switch (index) {
       case 0:
-        return Icon(Icons.person);
+        return const Icon(Icons.person);
       case 1:
-        return Icon(Icons.email);
+        return const Icon(Icons.email);
       case 2:
-        return Icon(Icons.phone);
+        return const Icon(Icons.phone);
       case 3:
-        return Icon(Icons.work);
+        return const Icon(Icons.work);
       case 4:
-        return Icon(Icons.person_add_alt_rounded);
+        return const Icon(Icons.person_add_alt_rounded);
       default:
-        return Icon(Icons.info);
+        return const Icon(Icons.info);
     }
   }
 

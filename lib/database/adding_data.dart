@@ -15,6 +15,21 @@ class UserDatabaseMethods {
     return querySnapshot.docs.isNotEmpty;
   }
 
+  Future<void> updateUserDetails(
+      Map<String, dynamic> updatedUserDetails, String email) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection("UserData")
+        .where("Email", isEqualTo: email)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final docId = querySnapshot.docs.first.id;
+      await FirebaseFirestore.instance
+          .collection("UserData")
+          .doc(docId)
+          .update(updatedUserDetails);
+    }
+  }
 
   Future<void> addUserBasicDetails(
       Map<String, dynamic> userBasicInfo, String id) async {
@@ -35,3 +50,4 @@ class UserDatabaseMethods {
     return null;
   }
 }
+

@@ -12,21 +12,27 @@ import 'dashboard_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
-  final FirebaseAuth firebaseAuth=FirebaseAuth.instance;
-  final UserDatabaseMethods userDatabaseMethods=UserDatabaseMethods();
+
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();
+
   void checkUserAndNavigate(BuildContext context) async {
     bool userExists = await userDatabaseMethods.checkEmailExists();
 
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-        userExists ? DashboardScreen(email: firebaseAuth.currentUser!.email.toString(),) : BasicDetailsScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => userExists
+            ? DashboardScreen(
+                email: firebaseAuth.currentUser!.email.toString(),
+              )
+            : BasicDetailsScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(2.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.decelerate;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
           return SlideTransition(
             position: animation.drive(tween),
             child: child,
@@ -69,7 +75,6 @@ class HomeScreen extends StatelessWidget {
               ),
               GestureDetector(
                   onTap: () {
-
                     checkUserAndNavigate(context);
                   },
                   child: Text(
@@ -87,25 +92,37 @@ class HomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    AdminScreen(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(2.0, 0.0);
-                              const end = Offset.zero;
-                              const curve = Curves.decelerate;
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: child,
-                              );
-                            }));
+                  onTap: () async {
+                    if (await userDatabaseMethods.checkEmailExists()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("You are already a user."),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.blue,
+                          showCloseIcon: true,
+                        ),
+                      );
+                    } else{
+                      Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                  AdminScreen(),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                const begin = Offset(2.0, 0.0);
+                                const end = Offset.zero;
+                                const curve = Curves.decelerate;
+                                var tween = Tween(begin: begin, end: end)
+                                    .chain(CurveTween(curve: curve));
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: child,
+                                );
+                              }));
+                    }
+
                   },
                   child: Text(
                     "Be a form creator",

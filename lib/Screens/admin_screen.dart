@@ -24,7 +24,7 @@ class AdminScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 15.0, left: 20.0),
                 child: Text(
-                  "Basic Details:",
+                  "Generate Form:",
                   style: GoogleFonts.rem(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
