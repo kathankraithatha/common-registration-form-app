@@ -1,9 +1,78 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
+import 'package:form_application/Reusable_Componets/buttons.dart';
+import 'package:form_application/Reusable_Componets/form_textfield.dart';
+import 'package:form_application/database/admin_database_methods.dart';
 import 'package:google_fonts/google_fonts.dart';
-class AdminScreen extends StatelessWidget {
-  const AdminScreen({super.key});
+import 'package:random_string/random_string.dart';
+
+class AdminScreen extends StatefulWidget {
+  const AdminScreen({Key? key}) : super(key: key);
+
+  @override
+  _AdminScreenState createState() => _AdminScreenState();
+}
+
+class _AdminScreenState extends State<AdminScreen> {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController fieldController = TextEditingController();
+  final AdminDatabaseMethods adminDatabaseMethods = AdminDatabaseMethods();
+  List<String> fieldHints = [];
+  bool isSubmitting = false;
+
+  Future<void> generateForm() async {
+    if (titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Title cannot be empty")),
+      );
+      return;
+    }
+
+    if (fieldHints.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("At least one field must be added")),
+      );
+      return;
+    }
+
+    setState(() {
+      isSubmitting = true;
+    });
+
+    // Generate a unique ID for the form
+    String id = randomAlpha(10);
+
+    // Create a form information map
+    Map<String, dynamic> formFieldInfo = {
+      "title": titleController.text,
+      "fields": fieldHints,
+    };
+
+    // Save the form to the database
+    await adminDatabaseMethods.addFormField(formFieldInfo, id);
+
+    setState(() {
+      isSubmitting = false;
+      titleController.clear();
+      fieldHints.clear();
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Form generated successfully")),
+    );
+  }
+
+  void addField() {
+    if (fieldController.text.isNotEmpty) {
+      setState(() {
+        fieldHints.add(fieldController.text);
+        fieldController.clear();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Field hint cannot be empty")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,27 +84,94 @@ class AdminScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.pinkAccent.shade100,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 20.0),
-                child: Text(
-                  "Generate Form:",
-                  style: GoogleFonts.rem(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade700,
+      backgroundColor: Colors.grey.shade100,
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Generate Form:",
+                    style: GoogleFonts.roboto(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade700,
+                    ),
                   ),
-                ),
+                  SizedBox(height: 8),
+                  FormTextfield(
+                    TextInputType.name,
+                    Icon(Icons.title),
+                    "Enter Title",
+                    titleController,
+                  ),
+                  SizedBox(height: 6),
+                  ...fieldHints.map((hint) => FormTextfield(
+                    TextInputType.text,
+                    Icon(Icons.text_fields),
+                    hint,
+                    TextEditingController(),
+                  )),
+                  SizedBox(height: 10),
+                  Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: isSubmitting
+                        ? CircularProgressIndicator()
+                        : VerificationButton(() async {
+                      await generateForm();
+                    }, "Generate Form"),
+                  ),
+                ],
               ),
-
-            ],
+            ),
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 26.0, right: 20),
+              child: FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(
+                        'Add Field:',
+                        style: GoogleFonts.roboto(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FormTextfield(
+                            TextInputType.text,
+                            Icon(Icons.text_fields),
+                            "Enter field hint",
+                            fieldController,
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              addField();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Save Field"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(Icons.add),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

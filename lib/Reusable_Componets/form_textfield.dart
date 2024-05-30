@@ -10,7 +10,7 @@ class FormTextfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      width: 300,
+      width: double.infinity,
       child: TextField(
         controller: textFieldController,
         decoration: InputDecoration(
@@ -29,6 +29,7 @@ class FormTextfield extends StatelessWidget {
             suffixIcon: textIcon,
         ),
         keyboardType: formInputType,
+
       ),
     );
   }
