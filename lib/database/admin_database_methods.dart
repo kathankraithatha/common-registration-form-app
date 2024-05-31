@@ -34,4 +34,17 @@ class AdminDatabaseMethods {
       'timestamp': FieldValue.serverTimestamp(),
     });
   }
+
+  Future<List<Map<String, dynamic>>> getUserFormSubmissions() async {
+    final querySnapshot = await _firestore.collection("UserFormSubmit").get();
+    return querySnapshot.docs.map((doc) => {
+      'id': doc.id, // Include the document ID
+      ...doc.data() as Map<String, dynamic>,
+    }).toList();
+  }
+
+  Future<String?> getFormTitle(String formId) async {
+    DocumentSnapshot doc = await _firestore.collection('FormsInfo').doc(formId).get();
+    return doc.exists ? doc.get('title') : null;
+  }
 }

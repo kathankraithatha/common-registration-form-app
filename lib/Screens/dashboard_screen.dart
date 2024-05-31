@@ -6,10 +6,10 @@ import '../Reusable_Componets/form_dialog.dart';
 import '../database/adding_data.dart';
 import '../database/admin_database_methods.dart';
 
-class DashboardScreen extends StatelessWidget {
+class UserDashboardScreen extends StatelessWidget {
   final String email;
 
-  DashboardScreen({super.key, required this.email});
+  UserDashboardScreen({super.key, required this.email});
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();

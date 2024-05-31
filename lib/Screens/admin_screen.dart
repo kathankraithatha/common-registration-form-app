@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:form_application/Reusable_Componets/buttons.dart';
 import 'package:form_application/Reusable_Componets/form_textfield.dart';
 import 'package:form_application/database/admin_database_methods.dart';
+import 'package:form_application/screens/dashboard_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_string/random_string.dart';
+
+import 'admin_dashboard_screen.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -69,7 +72,19 @@ class _AdminScreenState extends State<AdminScreen> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Field hint cannot be empty")),
+        const SnackBar(content: Text("Field hint cannot be empty")),
+      );
+    }
+  }
+
+  void removeRecentField() {
+    if (fieldHints.isNotEmpty) {
+      setState(() {
+        fieldHints.removeLast();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("No fields to remove")),
       );
     }
   }
@@ -116,6 +131,11 @@ class _AdminScreenState extends State<AdminScreen> {
                     TextEditingController(),
                   )),
                   SizedBox(height: 10),
+                  Center(
+                    child: VerificationButton(() {
+                      removeRecentField();
+                    }, "Remove recent field"),
+                  ),
                   Container(
                     width: double.infinity,
                     alignment: Alignment.center,
@@ -124,6 +144,15 @@ class _AdminScreenState extends State<AdminScreen> {
                         : VerificationButton(() async {
                       await generateForm();
                     }, "Generate Form"),
+                  ),
+                  SizedBox(height: 5),
+                  Center(
+                    child: VerificationButton(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AdminDashboardScreen()),
+                      );
+                    }, "Go to dashboard"),
                   ),
                 ],
               ),

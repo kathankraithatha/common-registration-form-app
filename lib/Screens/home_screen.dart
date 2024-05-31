@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => userExists
-            ? DashboardScreen(
+            ? UserDashboardScreen(
                 email: firebaseAuth.currentUser!.email.toString(),
               )
             : BasicDetailsScreen(),

@@ -118,7 +118,7 @@ class BasicDetailsScreen extends StatelessWidget {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DashboardScreen(email: email)));
+                              builder: (context) => UserDashboardScreen(email: email)));
                     });
                   }
                   controllers.forEach((controller) => controller.clear());
