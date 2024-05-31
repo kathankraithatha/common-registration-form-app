@@ -37,6 +37,7 @@ class UserDashboardScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FutureBuilder<Map<String, dynamic>?>(
               future: userDatabaseMethods.getUserDataByEmail(email),
@@ -91,12 +92,24 @@ class UserDashboardScreen extends StatelessWidget {
                             "Age: ${userData['Age']}",
                             style: GoogleFonts.roboto(fontSize: 18),
                           ),
+
                         ],
                       ),
                     ),
                   );
                 }
               },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Recent Forms:",
+                style: GoogleFonts.roboto(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade700,
+                ),
+              ),
             ),
             FutureBuilder<List<Map<String, dynamic>>>(
               future: adminDatabaseMethods.getFormData(),
@@ -116,7 +129,9 @@ class UserDashboardScreen extends StatelessWidget {
                       final formData = formDataList[index];
                       String? title = formData['title'];
                       return ListTile(
-                        title: Text("$title Form"),
+
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                        title: Text("${index+1}) ${title} Form"),
                         onTap: () {
                           showDialog(
                             context: context,

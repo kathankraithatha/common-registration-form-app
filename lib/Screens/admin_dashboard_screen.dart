@@ -51,58 +51,60 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         itemCount: submissions.length,
         itemBuilder: (context, index) {
           final submission = submissions[index];
-          return Card(
-            elevation: 6,
-            margin: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Form Title: ${submission['formTitle']}",
-                    style: GoogleFonts.roboto(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color:Colors.pinkAccent.shade700
-                    ),
+          return SingleChildScrollView(
+            child: Card(
+              elevation: 6,
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Form Title: ${submission['formTitle']}",
+                      style: GoogleFonts.roboto(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color:Colors.pinkAccent.shade700
+                      ),
 
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    "User Basic Details:",
-                    style: GoogleFonts.roboto(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  ...submission['userBasicDetails'].entries.map<Widget>(
-                        (entry) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Text(
-                        "${entry.key}: ${entry.value}",
-                        style: GoogleFonts.roboto(fontSize: 16),
+                    SizedBox(height: 8.0),
+                    Text(
+                      "User Basic Details:",
+                      style: GoogleFonts.roboto(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    "Submission:",
-                    style: GoogleFonts.roboto(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ...submission['submission'].entries.map<Widget>(
-                        (entry) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Text(
-                        "${entry.key}: ${entry.value}",
-                        style: GoogleFonts.roboto(fontSize: 16),
+                    ...submission['userBasicDetails'].entries.map<Widget>(
+                          (entry) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Text(
+                          "${entry.key}: ${entry.value}",
+                          style: GoogleFonts.roboto(fontSize: 16),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 8.0),
+                    Text(
+                      "Submission:",
+                      style: GoogleFonts.roboto(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ...submission['submission'].entries.map<Widget>(
+                          (entry) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Text(
+                          "${entry.key}: ${entry.value}",
+                          style: GoogleFonts.roboto(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
