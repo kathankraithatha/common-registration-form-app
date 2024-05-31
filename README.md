@@ -1,6 +1,7 @@
 # Event Registration Form App
 
-![System Design](path/to/system-design-image.png)
+![System Design]()![Form Generation App](https://github.com/kathankraithatha/common-registration-form-app/assets/99482358/d20bcaf8-3372-4481-b4a0-ce143c0696cc)
+
 
 ## Overview
 
