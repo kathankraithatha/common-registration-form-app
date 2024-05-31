@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Reusable_Componets/form_dialog.dart';
 import '../database/adding_data.dart';
 import '../database/admin_database_methods.dart';
-import '../Reusable_Componets/form_textfield.dart';
 
 class DashboardScreen extends StatelessWidget {
   final String email;
@@ -14,7 +14,7 @@ class DashboardScreen extends StatelessWidget {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();
   final AdminDatabaseMethods adminDatabaseMethods = AdminDatabaseMethods();
-  final TextEditingController customTextEditingController=TextEditingController();
+  final TextEditingController customTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -116,24 +116,19 @@ class DashboardScreen extends StatelessWidget {
                       final formData = formDataList[index];
                       String? title = formData['title'];
                       return ListTile(
-                        title: Text("Title: $title"),
-                        onTap: (){
-                          showDialog(context: context, builder: (context){
-                            return AlertDialog(
-                              title:  Text(formData['title'].toString()),
-                              content: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextField(
-                              ),
-                                ],
-                              ),
-                            );
-                          });
+                        title: Text("$title Form"),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => FormDialog(
+                              formId: formData['id'], // Pass the form ID here
+                              userEmail: email, // Pass the user's email here
+                            ),
+                          );
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => const Divider(height: 1,),
+                    separatorBuilder: (context, index) => const Divider(),
                   );
                 }
               },
@@ -144,6 +139,8 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
+
+
 
 // The rest of the EditDialog class remains unchanged.
 
