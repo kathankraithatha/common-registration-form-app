@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Reusable_Componets/form_dialog.dart';
@@ -14,13 +14,18 @@ class UserDashboardScreen extends StatelessWidget {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final UserDatabaseMethods userDatabaseMethods = UserDatabaseMethods();
   final AdminDatabaseMethods adminDatabaseMethods = AdminDatabaseMethods();
-  final TextEditingController customTextEditingController = TextEditingController();
+  final TextEditingController customTextEditingController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Dashboard"),
+        title:Text(
+          "Dashboard",
+          style: GoogleFonts.bricolageGrotesque(color: Colors.white),
+        ),
         backgroundColor: Colors.pinkAccent.shade100,
         actions: [
           IconButton(
@@ -34,131 +39,134 @@ class UserDashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FutureBuilder<Map<String, dynamic>?>(
-              future: userDatabaseMethods.getUserDataByEmail(email),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text("Error fetching data"));
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  return const Center(child: Text("No data found"));
-                } else {
-                  final userData = snapshot.data!;
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: 200,
-                      alignment: Alignment.topLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "User Basic Details:",
-                            style: GoogleFonts.roboto(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade700,
+      body: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FutureBuilder<Map<String, dynamic>?>(
+                future: userDatabaseMethods.getUserDataByEmail(email),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text("Error fetching data"));
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return const Center(child: Text("No data found"));
+                  } else {
+                    final userData = snapshot.data!;
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: 200,
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "User Basic Details:",
+                              style: GoogleFonts.roboto(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Name: ${userData['Name']}",
-                            style: GoogleFonts.roboto(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            const SizedBox(height: 8),
+                            Text(
+                              "Name: ${userData['Name']}",
+                              style: GoogleFonts.roboto(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "Email: ${userData['Email']}",
-                            style: GoogleFonts.roboto(fontSize: 18),
-                          ),
-                          Text(
-                            "PhoneNo: ${userData['PhoneNo']}",
-                            style: GoogleFonts.roboto(fontSize: 18),
-                          ),
-                          Text(
-                            "Designation: ${userData['Designation']}",
-                            style: GoogleFonts.roboto(fontSize: 18),
-                          ),
-                          Text(
-                            "Age: ${userData['Age']}",
-                            style: GoogleFonts.roboto(fontSize: 18),
-                          ),
-
-                        ],
+                            Text(
+                              "Email: ${userData['Email']}",
+                              style: GoogleFonts.roboto(fontSize: 18),
+                            ),
+                            Text(
+                              "PhoneNo: ${userData['PhoneNo']}",
+                              style: GoogleFonts.roboto(fontSize: 18),
+                            ),
+                            Text(
+                              "Designation: ${userData['Designation']}",
+                              style: GoogleFonts.roboto(fontSize: 18),
+                            ),
+                            Text(
+                              "Age: ${userData['Age']}",
+                              style: GoogleFonts.roboto(fontSize: 18),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "Recent Forms:",
-                style: GoogleFonts.roboto(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade700,
+                    );
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Recent Forms:",
+                  style: GoogleFonts.roboto(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade700,
+                  ),
                 ),
               ),
-            ),
-            FutureBuilder<List<Map<String, dynamic>>>(
-              future: adminDatabaseMethods.getFormData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text("Error fetching data"));
-                } else if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No data found"));
-                } else {
-                  final formDataList = snapshot.data!;
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: formDataList.length,
-                    itemBuilder: (context, index) {
-                      final formData = formDataList[index];
-                      String? title = formData['title'];
-                      return ListTile(
-
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                        title: Text("${index+1}) ${title} Form"),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => FormDialog(
-                              formId: formData['id'], // Pass the form ID here
-                              userEmail: email, // Pass the user's email here
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
-                  );
-                }
-              },
-            ),
-          ],
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: adminDatabaseMethods.getFormData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text("Error fetching data"));
+                  } else if (!snapshot.hasData ||
+                      snapshot.data == null ||
+                      snapshot.data!.isEmpty) {
+                    return const Center(child: Text("No data found"));
+                  } else {
+                    final formDataList = snapshot.data!;
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: formDataList.length,
+                      itemBuilder: (context, index) {
+                        final formData = formDataList[index];
+                        String? title = formData['title'];
+                        return ListTile(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
+                          title: Text("${index + 1}) ${title} Form"),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => FormDialog(
+                                formId: formData['id'],
+                                // Pass the form ID here
+                                userEmail:
+                                    email, // Pass the user's email here
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) => const Divider(),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-
-
 // The rest of the EditDialog class remains unchanged.
-
 
 class EditDialog extends StatefulWidget {
   final String email;

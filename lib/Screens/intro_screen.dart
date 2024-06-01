@@ -17,8 +17,9 @@ class IntroScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.home, color: Colors.white,),
-        title: Text("Common Registration Form", style: GoogleFonts.roboto(
-          color: Colors.white
+        title: Text("Evently", style: GoogleFonts.bricolageGrotesque(
+          color: Colors.white,
+              fontWeight: FontWeight.bold
         ),),
         backgroundColor: Colors.pinkAccent.shade100,
       ),
@@ -29,6 +30,15 @@ class IntroScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children:  [
+            Text(
+              "Evently",
+              style: GoogleFonts.kalam(
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
+                color: Colors.pinkAccent.shade700,
+              ),
+            ),
+            SizedBox(height: 8,),
             SizedBox(width: 200,
                 child: Container(child: Lottie.asset('lib/animation/form2.json'))),
             VerificationButton((){
@@ -67,6 +77,17 @@ class IntroScreen extends StatelessWidget {
               )
               );
             },"SignIn"),
+            SizedBox(height: 20,),
+            Text(
+              "Evently Your Exclusive Form Filling Destination ✨",
+              style: GoogleFonts.kalam(
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+                color: Colors.pinkAccent.shade700,
+                fontStyle: FontStyle.italic
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

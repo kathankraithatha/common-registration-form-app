@@ -87,7 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
       appBar: AppBar(
         title: Text(
           "SignIn Page",
-          style: GoogleFonts.roboto(color: Colors.white),
+          style: GoogleFonts.bricolageGrotesque(color: Colors.white),
         ),
         backgroundColor: Colors.pinkAccent.shade100,
       ),

@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
             child: Icon(Icons.logout, color: Colors.white)),
         title: Text(
           "Home Screen",
-          style: GoogleFonts.roboto(color: Colors.white),
+          style: GoogleFonts.bricolageGrotesque(color: Colors.white),
         ),
         backgroundColor: Colors.pinkAccent.shade100,
       ),

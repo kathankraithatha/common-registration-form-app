@@ -70,7 +70,7 @@ SignUp(String email, String password) async {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: Text("SignUp Page", style: GoogleFonts.roboto(
+        title: Text("SignUp Page", style: GoogleFonts.bricolageGrotesque(
             color: Colors.white
         ),),
         backgroundColor: Colors.pinkAccent.shade100,

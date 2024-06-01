@@ -95,7 +95,7 @@ class _AdminScreenState extends State<AdminScreen> {
       appBar: AppBar(
         title: Text(
           "Admin Screen",
-          style: GoogleFonts.roboto(color: Colors.white),
+          style: GoogleFonts.bricolageGrotesque(color: Colors.white),
         ),
         backgroundColor: Colors.pinkAccent.shade100,
       ),
